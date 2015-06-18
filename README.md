@@ -1,4 +1,4 @@
-# Fitbit4J #
+# Fitbit4J (DEPRECATED) #
 
 This repository hosts the public Fitbit Java Client API and Examples project.
 
