@@ -1,8 +1,10 @@
 # Fitbit4J (DEPRECATED) #
 
+**This library is not being maintained. Do not use this library in new applications. This library uses OAuth 1.0a, which will be removed from the Fitbit API in 2016. See https://dev.fitbit.com/docs**
+
 This repository hosts the public Fitbit Java Client API and Examples project.
 
-The Fitbit API Java Client library (Fitbit4J) is a complete solution to access all Fitbit API endpoints from your Java application. We have detailed walkthrough and best practice of using it on the Fitbit API wiki. http://wiki.fitbit.com
+The Fitbit API Java Client library (Fitbit4J) is a complete solution to access all Fitbit API endpoints from your Java application.
 
 Source code for the Fitbit4J library available under the LGPL license, along with the complete source code for the Fitbit Example Java Application. You are welcome to pull the code, fork it and customize it for your own projects, and if you think you have changes applicable to the wider Fitbit API developer community, let us know, and we will look at pulling those changes back into the main repository. Our hope is to be able to respond to developer requests for bug fixes and feature enhancements more quickly.
 
@@ -24,10 +26,3 @@ In addition to the standard Java runtime library, the Fitbit API Java Client lib
 
 You can find example of config file in /fitbit4j-example-client/src/main/resources/config.properties.example.
 You should rename it to config.properties and change properties if needed.
-
-
-
-# See also #
-
-* http://wiki.fitbit.com/display/API/Fitbit-API-Java-Client
-* http://wiki.fitbit.com/display/API/API-Client-Reference-App
