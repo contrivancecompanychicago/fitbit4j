@@ -35,9 +35,9 @@ import com.fitbit.api.client.http.HttpClient;
  * @author Yusuke Yamamoto - yusuke at mac.com
  */
 class FitbitAPIClientSupport {
-	protected Log log = LogFactory.getLog(getClass());
+    protected Log log = LogFactory.getLog(getClass());
 
-	protected HttpClient http = new HttpClient();
+    protected HttpClient http = new HttpClient();
     protected String source = Configuration.getSource();
     protected final boolean USE_SSL;
 

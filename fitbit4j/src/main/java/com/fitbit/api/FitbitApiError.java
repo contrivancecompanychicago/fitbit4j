@@ -10,37 +10,37 @@ import java.util.Collections;
 import java.util.List;
 
 public class FitbitApiError {
-	public enum ErrorType {
-		Oauth("Oauth"),
-		System("system"),
-		Validation("validation"),
-		Request("request");
+    public enum ErrorType {
+        Oauth("Oauth"),
+        System("system"),
+        Validation("validation"),
+        Request("request");
 
-		private String code;
+        private String code;
 
-		ErrorType(String code) {
-			this.code = code;
-		}
+        ErrorType(String code) {
+            this.code = code;
+        }
 
-		public String toString() {
-			return code;
-		}
-	}
+        public String toString() {
+            return code;
+        }
+    }
 
-	private ErrorType errorType;
+    private ErrorType errorType;
     private String fieldName;
-	private String message;
+    private String message;
 
-	public FitbitApiError(ErrorType errorType, String fieldName, String message) {
-		this.errorType = errorType;
-		this.message = message;
-		this.fieldName = fieldName;
-	}
+    public FitbitApiError(ErrorType errorType, String fieldName, String message) {
+        this.errorType = errorType;
+        this.message = message;
+        this.fieldName = fieldName;
+    }
 
-	public FitbitApiError(ErrorType errorType, String message) {
-		this.errorType = errorType;
-		this.message = message;
-	}
+    public FitbitApiError(ErrorType errorType, String message) {
+        this.errorType = errorType;
+        this.message = message;
+    }
 
     public FitbitApiError(JSONObject res) throws FitbitAPIException {
         try {
@@ -78,27 +78,27 @@ public class FitbitApiError {
         return new ArrayList<FitbitApiError>(0);
     }
 
-	public ErrorType getErrorType() {
-		return errorType;
-	}
+    public ErrorType getErrorType() {
+        return errorType;
+    }
 
-	public void setErrorType(ErrorType errorType) {
-		this.errorType = errorType;
-	}
+    public void setErrorType(ErrorType errorType) {
+        this.errorType = errorType;
+    }
 
-	public String getMessage() {
-		return message;
-	}
+    public String getMessage() {
+        return message;
+    }
 
-	public void setMessage(String message) {
-		this.message = message;
-	}
+    public void setMessage(String message) {
+        this.message = message;
+    }
 
-	public String getFieldName() {
-		return fieldName;
-	}
+    public String getFieldName() {
+        return fieldName;
+    }
 
-	public void setFieldName(String fieldName) {
-		this.fieldName = fieldName;
-	}
+    public void setFieldName(String fieldName) {
+        this.fieldName = fieldName;
+    }
 }

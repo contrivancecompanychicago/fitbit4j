@@ -58,7 +58,7 @@ import java.util.zip.GZIPInputStream;
  * @author Yusuke Yamamoto - yusuke at mac.com
  */
 public class Response {
-	private static final Log log = LogFactory.getLog(Response.class);
+    private static final Log log = LogFactory.getLog(Response.class);
 
     private static ThreadLocal<DocumentBuilder> builders =
             new ThreadLocal<DocumentBuilder>() {

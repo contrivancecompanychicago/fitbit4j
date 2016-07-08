@@ -2,7 +2,7 @@ package com.fitbit.api;
 
 public class FitbitAPISecurityException extends FitbitAPIException {
 
-	private static final long serialVersionUID = 647984493835994436L;
+    private static final long serialVersionUID = 647984493835994436L;
 
     public FitbitAPISecurityException(String msg) {
         super(msg);

@@ -46,16 +46,16 @@ import java.util.Map;
  * @author Yusuke Yamamoto - yusuke at mac.com
  */
 public class HttpClient implements Serializable {
-	
-	protected static Log log = LogFactory.getLog(HttpClient.class);
-	
-	protected static enum HttpMethod {
-		GET,
-		POST,
-		DELETE,
-		PUT
-	}
-	
+    
+    protected static Log log = LogFactory.getLog(HttpClient.class);
+    
+    protected static enum HttpMethod {
+        GET,
+        POST,
+        DELETE,
+        PUT
+    }
+    
     private static final int OK = 200;// OK: Success!
     private static final int NOT_MODIFIED = 304;// Not Modified: There was no new data to return.
     private static final int BAD_REQUEST = 400;// Bad Request: The request was invalid.  An accompanying error message will explain why. This status code will be returned during rate limiting.
@@ -376,7 +376,7 @@ public class HttpClient implements Serializable {
     }
 
     public Response post(String url, boolean authenticated) throws FitbitAPIException {
-    	return post(url, PostParameter.EMPTY_ARRAY, authenticated);
+        return post(url, PostParameter.EMPTY_ARRAY, authenticated);
     }
 
     public Response post(String url, PostParameter[] postParameters) throws FitbitAPIException {
@@ -388,12 +388,12 @@ public class HttpClient implements Serializable {
     }
     
     public Response delete(String url) throws FitbitAPIException {
-    	return delete(url, false);
+        return delete(url, false);
     }
     
     public Response delete(String url, boolean authenticated) throws FitbitAPIException {
-    	return httpRequest(HttpMethod.DELETE, url, null, authenticated);
-    }	
+        return httpRequest(HttpMethod.DELETE, url, null, authenticated);
+    }    
     
     public Response get(String url, boolean authenticated) throws FitbitAPIException {
         return httpRequest(HttpMethod.GET, url, null, authenticated);
@@ -405,10 +405,10 @@ public class HttpClient implements Serializable {
 
     protected Response httpRequest(HttpMethod method, String url, PostParameter[] postParams,
                                  boolean authenticated) throws FitbitAPIException {
-    	if (log.isDebugEnabled()) {
-    		log.debug("HTTP " + method + " " + url);
-    	}
-    	
+        if (log.isDebugEnabled()) {
+            log.debug("HTTP " + method + " " + url);
+        }
+        
         int retriedCount;
         int retry = retryCount + 1;
         Response res = null;
@@ -448,14 +448,14 @@ public class HttpClient implements Serializable {
                                 if (null != key) {
                                     log.debug("Header: '" + key + "' => '" + value + "'");
                                 } else{
-                                	log.debug("Header value: '" + value + "'");
+                                    log.debug("Header value: '" + value + "'");
                                 }
                             }
                         }
                     }
                     
                     if (responseCode >= 200 && responseCode < 300) {
-                    	break;
+                        break;
                     } else {
                         if (responseCode < INTERNAL_SERVER_ERROR || retriedCount == retryCount) {
                             throw new FitbitAPIException(getCause(responseCode), res);
@@ -475,7 +475,7 @@ public class HttpClient implements Serializable {
                 }
             }
             try {
-            	if (log.isDebugEnabled() && null!=res) {
+                if (log.isDebugEnabled() && null!=res) {
                     res.asString();
                 }
                 log.debug("Sleeping " + retryIntervalMillis + " millisecs for next retry.");
@@ -510,9 +510,9 @@ public class HttpClient implements Serializable {
      * @param authenticated boolean
      */
     private void setHeaders(HttpMethod method, String url, PostParameter[] params, HttpURLConnection connection, boolean authenticated) {
-    	if (log.isDebugEnabled()) {
-    		log.debug("Request: HTTP " + method.toString() + ' ' + url);
-    	}
+        if (log.isDebugEnabled()) {
+            log.debug("Request: HTTP " + method.toString() + ' ' + url);
+        }
 
         if (authenticated) {
             if (basic == null && oauth == null) {

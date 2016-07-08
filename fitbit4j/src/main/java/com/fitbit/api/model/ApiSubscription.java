@@ -24,7 +24,7 @@ public class ApiSubscription {
             this.subscriberId = json.getString("subscriberId");
             this.subscriptionId = json.getString("subscriptionId");
             this.ownerType = ResourceOwnerType.valueOf(json.getString("ownerType"));
-			this.ownerId = json.getString("ownerId");
+            this.ownerId = json.getString("ownerId");
             if (json.has("collectionType")) {
                 this.collectionType = APICollectionType.valueOf(json.getString("collectionType"));
             }

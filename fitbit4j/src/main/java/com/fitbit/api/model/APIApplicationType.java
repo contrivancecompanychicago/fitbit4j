@@ -1,8 +1,8 @@
 package com.fitbit.api.model;
 
 public enum APIApplicationType {
-	CLIENT("Client"),
-	BROWSER("Browser");
+    CLIENT("Client"),
+    BROWSER("Browser");
 
     String label;
 

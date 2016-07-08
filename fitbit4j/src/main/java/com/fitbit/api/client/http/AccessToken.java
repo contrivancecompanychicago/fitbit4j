@@ -64,8 +64,8 @@ public class AccessToken extends OAuthToken {
      * @since Fitbit4J 1
      */
 
-	public String getEncodedUserId() {
-		return encodedUserId;
-	}
+    public String getEncodedUserId() {
+        return encodedUserId;
+    }
 
 }

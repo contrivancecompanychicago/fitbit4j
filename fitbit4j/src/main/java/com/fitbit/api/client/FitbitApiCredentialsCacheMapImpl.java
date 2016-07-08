@@ -10,9 +10,9 @@ import com.fitbit.api.model.APIResourceCredentials;
 public class FitbitApiCredentialsCacheMapImpl implements FitbitApiCredentialsCache {
 
     private final Map<LocalUserDetail, APIResourceCredentials> mapUserIdResourceCredentials = 
-    					Collections.synchronizedMap(new HashMap<LocalUserDetail, APIResourceCredentials>());
+                        Collections.synchronizedMap(new HashMap<LocalUserDetail, APIResourceCredentials>());
     private final Map<String, APIResourceCredentials> mapTempTokenResourceCredentials = 
-    					Collections.synchronizedMap(new HashMap<String, APIResourceCredentials>());
+                        Collections.synchronizedMap(new HashMap<String, APIResourceCredentials>());
 
     @Override
     public APIResourceCredentials getResourceCredentials(LocalUserDetail user) {
