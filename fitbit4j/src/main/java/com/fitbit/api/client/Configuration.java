@@ -234,7 +234,7 @@ public class Configuration {
         return getProperty("fitbitAPIClient.oauth.consumerKey");
     }
 
-    public static String getOAuthConsumerKey(String consumerKey) {
+    public static String getOAuthClientId(String consumerKey) {
         return getProperty("fitbitAPIClient.oauth.consumerKey", consumerKey);
     }
 
@@ -242,7 +242,7 @@ public class Configuration {
         return getProperty("fitbitAPIClient.oauth.consumerSecret");
     }
 
-    public static String getOAuthConsumerSecret(String consumerSecret) {
+    public static String getOAuthClientSecret(String consumerSecret) {
         return getProperty("fitbitAPIClient.oauth.consumerSecret", consumerSecret);
     }
 

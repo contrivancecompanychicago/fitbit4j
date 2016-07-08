@@ -1,7 +1,8 @@
 package com.fitbit.api.common.model.sleep;
 
 import com.fitbit.api.FitbitAPIException;
-import com.fitbit.api.client.http.Response;
+import org.nilsding.util.Utils;
+import com.github.scribejava.core.model.Response;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,11 +26,11 @@ public class Sleep {
 
     public static Sleep constructSleep(Response res) throws FitbitAPIException {
         try {
-            SleepSummary summary = new SleepSummary(res.asJSONObject().getJSONObject("summary"));
-            List<SleepLog> sleepLogs = jsonArrayToSleepLogList(res.asJSONObject().getJSONArray("sleep"));
+            SleepSummary summary = new SleepSummary(Utils.toJsonObject(res).getJSONObject("summary"));
+            List<SleepLog> sleepLogs = jsonArrayToSleepLogList(Utils.toJsonObject(res).getJSONArray("sleep"));
             return new Sleep(summary, sleepLogs);
          } catch (JSONException e) {
-            throw new FitbitAPIException(e.getMessage() + ':' + res.asString(), e);
+            throw new FitbitAPIException(e.getMessage() + ':' + res.getMessage(), e);
         }
     }
 

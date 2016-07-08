@@ -1,7 +1,8 @@
 package com.fitbit.api.model;
 
 import com.fitbit.api.FitbitAPIException;
-import com.fitbit.api.client.http.Response;
+import org.nilsding.util.Utils;
+import com.github.scribejava.core.model.Response;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 import org.json.JSONException;
@@ -20,12 +21,12 @@ public class ApiRateLimitStatus {
 
     public ApiRateLimitStatus(Response res) throws FitbitAPIException {
         try {
-            JSONObject rateLimitStatus = res.asJSONObject().getJSONObject("rateLimitStatus");
+            JSONObject rateLimitStatus = Utils.toJsonObject(res).getJSONObject("rateLimitStatus");
             remainingHits = rateLimitStatus.getInt("remainingHits");
             hourlyLimit = rateLimitStatus.getInt("hourlyLimit");
             resetTime = ISODateTimeFormat.dateTime().parseDateTime(rateLimitStatus.getString("resetTime"));
          } catch (JSONException e) {
-            throw new FitbitAPIException(e.getMessage() + ':' + res.asString(), e);
+            throw new FitbitAPIException(e.getMessage() + ':' + res.getMessage(), e);
         }
     }
     

@@ -12,8 +12,11 @@ public class APIResourceCredentials {
      */
     String tempTokenVerifier;
     String accessToken;
-    String accessTokenSecret;
+    String refreshToken;
+    String scope;
+    String tokenType = "bearer";
     String resourceId;
+    int expiresIn;
 
     String resourceURL;
     String localUserId;
@@ -55,15 +58,55 @@ public class APIResourceCredentials {
     public void setAccessToken(String accessToken) {
         this.accessToken = accessToken;
     }
-
+    
+    /**
+     * @deprecated use getRefreshToken instead
+     * @return 
+     */
     public String getAccessTokenSecret() {
-        return accessTokenSecret;
+        return getRefreshToken();
+    }
+    
+    /**
+     * @deprecated use setRefreshToken instead
+     * @param refreshToken 
+     */
+    public void setAccessTokenSecret(String refreshToken) {
+        setRefreshToken(refreshToken);
+    }
+    
+    public String getRefreshToken() {
+        return refreshToken;
     }
 
-    public void setAccessTokenSecret(String accessTokenSecret) {
-        this.accessTokenSecret = accessTokenSecret;
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 
+    public String getScope() {
+        return scope;
+    }
+
+    public void setScope(String scope) {
+        this.scope = scope;
+    }
+
+    public String getTokenType() {
+        return tokenType;
+    }
+
+    public void setTokenType(String tokenType) {
+        this.tokenType = tokenType;
+    }
+
+    public int getExpiresIn() {
+        return expiresIn;
+    }
+
+    public void setExpiresIn(int expiresIn) {
+        this.expiresIn = expiresIn;
+    }
+    
     public String getLocalUserId() {
         return localUserId;
     }

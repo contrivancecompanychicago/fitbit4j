@@ -106,12 +106,6 @@ public class APIUtil {
         return sb.toString();
     }
 
-
-    public static String generateSignature(String data, String secret) {
-        OAuth oauth = new OAuth(null, secret);
-        return oauth.generateSignature(data);
-    }
-
     
     /* ********************************************************************* */
 

@@ -1,8 +1,9 @@
 package com.fitbit.api.common.model.foods;
 
 import com.fitbit.api.FitbitAPIException;
-import com.fitbit.api.client.http.Response;
 import com.fitbit.api.common.service.FitbitApiService;
+import org.nilsding.util.Utils;
+import com.github.scribejava.core.model.Response;
 import org.joda.time.LocalDate;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -49,10 +50,10 @@ public class FoodLog {
 
     public static List<FoodLog> constructFoodLogList(Response res, String arrayName) throws FitbitAPIException {
         try {
-            JSONObject json = res.asJSONObject();
+            JSONObject json = Utils.toJsonObject(res);
             return jsonArrayToFoodLogList(json.getJSONArray(arrayName));
          } catch (JSONException e) {
-            throw new FitbitAPIException(e.getMessage() + ':' + res.asString(), e);
+            throw new FitbitAPIException(e.getMessage() + ':' + res.getMessage(), e);
         }
     }
 

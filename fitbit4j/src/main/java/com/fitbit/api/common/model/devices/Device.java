@@ -1,7 +1,8 @@
 package com.fitbit.api.common.model.devices;
 
 import com.fitbit.api.FitbitAPIException;
-import com.fitbit.api.client.http.Response;
+import org.nilsding.util.Utils;
+import com.github.scribejava.core.model.Response;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,9 +35,9 @@ public class Device {
 
     public static List<Device> constructDeviceList(Response res) throws FitbitAPIException {
         try {
-            return jsonArrayToDeviceList(res.asJSONArray());
+            return jsonArrayToDeviceList(Utils.toJsonArray(res));
         } catch (JSONException e) {
-            throw new FitbitAPIException(e.getMessage() + ':' + res.asString(), e);
+            throw new FitbitAPIException(e.getMessage() + ':' + res.getMessage(), e);
         }
     }
 

@@ -1,7 +1,6 @@
 package com.fitbit.api.common.model.devices;
 
 import com.fitbit.api.FitbitAPIException;
-import com.fitbit.api.client.http.Response;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

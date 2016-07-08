@@ -1,7 +1,8 @@
 package com.fitbit.api.common.model.foods;
 
 import com.fitbit.api.FitbitAPIException;
-import com.fitbit.api.client.http.Response;
+import org.nilsding.util.Utils;
+import com.github.scribejava.core.model.Response;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -61,18 +62,18 @@ public class Food {
 
     public static List<Food> constructFoodList(Response res, String arrayName) throws FitbitAPIException {
         try {
-            JSONObject json = res.asJSONObject();
+            JSONObject json = Utils.toJsonObject(res);
             return jsonArrayToFoodList(json.getJSONArray(arrayName));
         } catch (JSONException e) {
-            throw new FitbitAPIException(e.getMessage() + ':' + res.asString(), e);
+            throw new FitbitAPIException(e.getMessage() + ':' + res.getMessage(), e);
         }
     }
 
     public static List<Food> constructFoodListFromArrayResponse(Response res) throws FitbitAPIException {
         try {
-            return jsonArrayToFoodList(res.asJSONArray());
+            return jsonArrayToFoodList(Utils.toJsonArray(res));
         } catch (JSONException e) {
-            throw new FitbitAPIException(e.getMessage() + ':' + res.asString(), e);
+            throw new FitbitAPIException(e.getMessage() + ':' + res.getMessage(), e);
         }
     }
 

@@ -9,8 +9,6 @@ import com.fitbit.api.client.FitbitApiCredentialsCache;
 import com.fitbit.api.client.FitbitApiSubscriptionStorage;
 import com.fitbit.api.client.LocalSubscriptionDetail;
 import com.fitbit.api.client.LocalUserDetail;
-import com.fitbit.api.client.http.AccessToken;
-import com.fitbit.api.client.http.TempCredentials;
 import com.fitbit.api.common.model.activities.Activities;
 import com.fitbit.api.common.model.foods.Foods;
 import com.fitbit.api.model.*;
@@ -34,12 +32,12 @@ public class FitbitAPIClientService<C extends FitbitApiClientAgent> {
     protected FitbitApiSubscriptionStorage subscriptionStore;
     protected String subscriberSecret;
 
-    public FitbitAPIClientService(C client, String consumerKey, String consumerSecret,
+    public FitbitAPIClientService(C client, String clientId, String clientSecret,
                                   FitbitApiCredentialsCache credentialsCache, FitbitAPIEntityCache entityCache,
                                   FitbitApiSubscriptionStorage subscriptionStore) {
         this.client = client;
-        client.setOAuthConsumer(consumerKey, consumerSecret);
-        subscriberSecret = consumerSecret;
+        client.setOAuthClient(clientId, clientSecret);
+        subscriberSecret = clientSecret;
         this.credentialsCache = credentialsCache;
         this.entityCache = entityCache;
         this.subscriptionStore = subscriptionStore;
@@ -77,35 +75,48 @@ public class FitbitAPIClientService<C extends FitbitApiClientAgent> {
         return credentialsCache.expireResourceCredentials(user);
     }
 
+    /**
+     * @deprecated derp
+     * @param user
+     * @param callbackURL
+     * @return
+     * @throws FitbitAPIException 
+     */
     public String getResourceOwnerAuthorizationURL(LocalUserDetail user, String callbackURL) throws FitbitAPIException {
         // Get temporary credentials. Include callback URL which the Fitbit API service will save and redirect to when
         // the user authorizes.
-        TempCredentials tempCredentials = client.getOAuthTempToken(callbackURL);
-        // Create and save temporary resource credentials:
-        APIResourceCredentials resourceCredentials = new APIResourceCredentials(user.getUserId(), tempCredentials.getToken(), tempCredentials.getTokenSecret());
-        saveResourceCredentials(user, resourceCredentials);
-        // Return Fitbit URL to redirect to where the user can authorize:
-        return tempCredentials.getAuthorizationURL();
+//        TempCredentials tempCredentials = client.getOAuthTempToken(callbackURL);
+//        // Create and save temporary resource credentials:
+//        APIResourceCredentials resourceCredentials = new APIResourceCredentials(user.getUserId(), tempCredentials.getToken(), tempCredentials.getTokenSecret());
+//        saveResourceCredentials(user, resourceCredentials);
+//        // Return Fitbit URL to redirect to where the user can authorize:
+//        return tempCredentials.getAuthorizationURL();
+        return null;
     }
 
+    /**
+     * @deprecated derp
+     * @param user
+     * @throws FitbitAPIException 
+     */
     public void getTokenCredentials(LocalUserDetail user) throws FitbitAPIException {
         // Get cached resource credentials:
-        APIResourceCredentials resourceCredentials = getResourceCredentialsByUser(user);
-        if (resourceCredentials == null) {
-            throw new FitbitAPIException("User " + user.getUserId() + " does not have resource credentials. Need to grant authorization first.");
-        }
-
-        String tempToken = resourceCredentials.getTempToken();
-        String tempTokenSecret = resourceCredentials.getTempTokenSecret();
-        if (tempToken == null || tempTokenSecret == null) {
-            throw new FitbitAPIException("Resource credentials for resource " + user.getUserId() + " are in an invalid state: temporary token or secret is null.");
-        }
-
-        // Get and save token credentials:
-        AccessToken accessToken = client.getOAuthAccessToken(tempToken, tempTokenSecret, resourceCredentials.getTempTokenVerifier());
-        resourceCredentials.setAccessToken(accessToken.getToken());
-        resourceCredentials.setAccessTokenSecret(accessToken.getTokenSecret());
-        resourceCredentials.setResourceId(accessToken.getEncodedUserId());
+//        APIResourceCredentials resourceCredentials = getResourceCredentialsByUser(user);
+//        if (resourceCredentials == null) {
+//            throw new FitbitAPIException("User " + user.getUserId() + " does not have resource credentials. Need to grant authorization first.");
+//        }
+//
+//        String tempToken = resourceCredentials.getTempToken();
+//        String tempTokenSecret = resourceCredentials.getTempTokenSecret();
+//        if (tempToken == null || tempTokenSecret == null) {
+//            throw new FitbitAPIException("Resource credentials for resource " + user.getUserId() + " are in an invalid state: temporary token or secret is null.");
+//        }
+//
+//        // Get and save token credentials:
+//        AccessToken accessToken = client.getOAuthAccessToken(tempToken, tempTokenSecret, resourceCredentials.getTempTokenVerifier());
+//        resourceCredentials.setAccessToken(accessToken.getToken());
+//        resourceCredentials.setAccessTokenSecret(accessToken.getTokenSecret());
+//        resourceCredentials.setResourceId(accessToken.getEncodedUserId());
     }
 
     public Activities getActivities(LocalUserDetail user, LocalDate date) throws FitbitAPIException {
@@ -208,87 +219,95 @@ public class FitbitAPIClientService<C extends FitbitApiClientAgent> {
         }
     }
 
+    /**
+     * @deprecated
+     * @param subscriberId
+     * @param updateMessageStream
+     * @param serverSignature
+     * @throws FitbitAPIException 
+     */
     public void evictUpdatedResourcesFromCache(String subscriberId, InputStream updateMessageStream, String serverSignature) throws FitbitAPIException {
-        try {
-            if (null == serverSignature) {
-                throw new FitbitAPISecurityException("Missing signature.");
-            }
-
-            String updateMessage = APIUtil.inputStreamToString(updateMessageStream);
-
-            String ourSignature = APIUtil.generateSignature(updateMessage, subscriberSecret);
-            if (null == ourSignature || !ourSignature.equals(serverSignature)) {
-                throw new FitbitAPISecurityException("Signatures do not match, given " + serverSignature);
-            }
-
-            UpdateNotification notification = new UpdateNotification(new JSONArray(updateMessage));
-
-            int i = 0;
-            for (UpdatedResource resource : notification.getUpdatedResources()) {
-                //noinspection UnnecessaryParentheses,ValueOfIncrementOrDecrementUsed
-                log.info("Processing update notification " + (++i) + " for subscription " + resource.getSubscriptionId());
-
-                LocalSubscriptionDetail sub = subscriptionStore.getBySubscriptionId(resource.getSubscriptionId());
-                if (null == sub) {
-                    log.info("Nothing known about subscription " + resource.getSubscriptionId() + ", creating placeholder.");
-
-                    sub = new LocalSubscriptionDetail(
-                            new SubscriptionDetail(
-                                    subscriberId,
-                                    resource.getSubscriptionId(),
-                                    resource.getOwner(),
-                                    resource.getCollectionType()
-                            ),
-                            false
-                    );
-                    subscriptionStore.save(sub);
-                }
-
-                sub.setLastUpdateNotificationDate(new Date());
-
-                APIResourceCredentials credentials = credentialsCache.getResourceCredentials(new LocalUserDetail(resource.getSubscriptionId()));
-
-                String cacheKeyWithUserId =
-                        APIUtil.constructFullUrl(
-                                client.getApiBaseUrl(),
-                                client.getApiVersion(),
-                                resource.getOwner(),
-                                resource.getCollectionType(),
-                                resource.getDate(),
-                                APIFormat.JSON
-                        );
-
-                Activities entity = (Activities) entityCache.get(credentials, cacheKeyWithUserId);
-                if (null != entity) {
-                    log.info("Evicting entity " + cacheKeyWithUserId);
-                    entityCache.remove(credentials, cacheKeyWithUserId);
-                } else {
-                    log.info("There is no cached version of entity " + cacheKeyWithUserId);
-                }
-
-                String cacheKeyWithPlaceholder =
-                        APIUtil.constructFullUrl(
-                                client.getApiBaseUrl(),
-                                client.getApiVersion(),
-                                FitbitUser.CURRENT_AUTHORIZED_USER,
-                                resource.getCollectionType(),
-                                resource.getDate(),
-                                APIFormat.JSON
-                        );
-
-                entity = (Activities) entityCache.get(credentials, cacheKeyWithPlaceholder);
-                if (null != entity) {
-                    log.info("Evicting entity " + cacheKeyWithPlaceholder);
-                    entityCache.remove(credentials, cacheKeyWithPlaceholder);
-                } else {
-                    log.info("There is no cached version of entity " + cacheKeyWithPlaceholder);
-                }
-            }
-        } catch (IOException e) {
-            throw new FitbitAPIException("Notification stream is malformed: " + e, e);
-        } catch (JSONException e) {
-            throw new FitbitAPIException("Unable to parse update message: " + e, e);
-        }
+        throw new FitbitAPIException("NEIN NEIN NEIN NEIN NEIN");
+//        try {
+//            if (null == serverSignature) {
+//                throw new FitbitAPISecurityException("Missing signature.");
+//            }
+//
+//            String updateMessage = APIUtil.inputStreamToString(updateMessageStream);
+//
+//            String ourSignature = APIUtil.generateSignature(updateMessage, subscriberSecret);
+//            if (null == ourSignature || !ourSignature.equals(serverSignature)) {
+//                throw new FitbitAPISecurityException("Signatures do not match, given " + serverSignature);
+//            }
+//
+//            UpdateNotification notification = new UpdateNotification(new JSONArray(updateMessage));
+//
+//            int i = 0;
+//            for (UpdatedResource resource : notification.getUpdatedResources()) {
+//                //noinspection UnnecessaryParentheses,ValueOfIncrementOrDecrementUsed
+//                log.info("Processing update notification " + (++i) + " for subscription " + resource.getSubscriptionId());
+//
+//                LocalSubscriptionDetail sub = subscriptionStore.getBySubscriptionId(resource.getSubscriptionId());
+//                if (null == sub) {
+//                    log.info("Nothing known about subscription " + resource.getSubscriptionId() + ", creating placeholder.");
+//
+//                    sub = new LocalSubscriptionDetail(
+//                            new SubscriptionDetail(
+//                                    subscriberId,
+//                                    resource.getSubscriptionId(),
+//                                    resource.getOwner(),
+//                                    resource.getCollectionType()
+//                            ),
+//                            false
+//                    );
+//                    subscriptionStore.save(sub);
+//                }
+//
+//                sub.setLastUpdateNotificationDate(new Date());
+//
+//                APIResourceCredentials credentials = credentialsCache.getResourceCredentials(new LocalUserDetail(resource.getSubscriptionId()));
+//
+//                String cacheKeyWithUserId =
+//                        APIUtil.constructFullUrl(
+//                                client.getApiBaseUrl(),
+//                                client.getApiVersion(),
+//                                resource.getOwner(),
+//                                resource.getCollectionType(),
+//                                resource.getDate(),
+//                                APIFormat.JSON
+//                        );
+//
+//                Activities entity = (Activities) entityCache.get(credentials, cacheKeyWithUserId);
+//                if (null != entity) {
+//                    log.info("Evicting entity " + cacheKeyWithUserId);
+//                    entityCache.remove(credentials, cacheKeyWithUserId);
+//                } else {
+//                    log.info("There is no cached version of entity " + cacheKeyWithUserId);
+//                }
+//
+//                String cacheKeyWithPlaceholder =
+//                        APIUtil.constructFullUrl(
+//                                client.getApiBaseUrl(),
+//                                client.getApiVersion(),
+//                                FitbitUser.CURRENT_AUTHORIZED_USER,
+//                                resource.getCollectionType(),
+//                                resource.getDate(),
+//                                APIFormat.JSON
+//                        );
+//
+//                entity = (Activities) entityCache.get(credentials, cacheKeyWithPlaceholder);
+//                if (null != entity) {
+//                    log.info("Evicting entity " + cacheKeyWithPlaceholder);
+//                    entityCache.remove(credentials, cacheKeyWithPlaceholder);
+//                } else {
+//                    log.info("There is no cached version of entity " + cacheKeyWithPlaceholder);
+//                }
+//            }
+//        } catch (IOException e) {
+//            throw new FitbitAPIException("Notification stream is malformed: " + e, e);
+//        } catch (JSONException e) {
+//            throw new FitbitAPIException("Unable to parse update message: " + e, e);
+//        }
     }
 
 }

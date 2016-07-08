@@ -1,7 +1,8 @@
 package com.fitbit.api.common.model.activities;
 
 import com.fitbit.api.FitbitAPIException;
-import com.fitbit.api.client.http.Response;
+import org.nilsding.util.Utils;
+import com.github.scribejava.core.model.Response;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,9 +40,9 @@ public class ActivityReference {
 
     public static List<ActivityReference> constructActivityReferenceList(Response res) throws FitbitAPIException {
         try {
-            return jsonArrayToActivityReferenceList(res.asJSONArray());
+            return jsonArrayToActivityReferenceList(Utils.toJsonArray(res));
          } catch (JSONException e) {
-            throw new FitbitAPIException(e.getMessage() + ':' + res.asString(), e);
+            throw new FitbitAPIException(e.getMessage() + ':' + res.getMessage(), e);
         }
     }
 

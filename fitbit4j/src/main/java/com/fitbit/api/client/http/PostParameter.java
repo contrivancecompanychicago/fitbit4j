@@ -1,66 +1,60 @@
 /*
-Copyright (c) 2007-2009, Yusuke Yamamoto
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-    * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright
-      notice, this list of conditions and the following disclaimer in the
-      documentation and/or other materials provided with the distribution.
-    * Neither the name of the Yusuke Yamamoto nor the
-      names of its contributors may be used to endorse or promote products
-      derived from this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY Yusuke Yamamoto ``AS IS'' AND ANY
-EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL Yusuke Yamamoto BE LIABLE FOR ANY
-DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package com.fitbit.api.client.http;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * A data class representing HTTP Post parameter
  *
- * @author Yusuke Yamamoto - yusuke at mac.com
+ * @author nilsding
  */
 public class PostParameter implements Serializable, Comparable {
-    String name;
-    String value;
-    private static final long serialVersionUID = -8708108746980739212L;
-    static final PostParameter[] EMPTY_ARRAY = new PostParameter[0];
 
-    public PostParameter(String name, String value) {
-        this.name = name;
+    private String key;
+    private String value;
+    
+    public static Map<String, String> postParameterArrayToMap(PostParameter[] params) {
+        Map<String, String> map = new HashMap<String, String>();
+        for (PostParameter param : params) {
+            map.put(param.key, param.value);
+        }
+        return map;
+    }
+    
+    public PostParameter(String key, String value) {
+        this.key = key;
         this.value = value;
     }
 
-    public PostParameter(String name, double value) {
-        this.name = name;
+    public PostParameter(String key, double value) {
+        this.key = key;
         this.value = String.valueOf(value);
     }
 
-    public PostParameter(String name, long value) {
-        this.name = name;
+    public PostParameter(String key, long value) {
+        this.key = key;
         this.value = String.valueOf(value);
     }
 
-    public PostParameter(String name, int value) {
-        this.name = name;
+    public PostParameter(String key, int value) {
+        this.key = key;
         this.value = String.valueOf(value);
     }
 
+    /**
+     * @deprecated Use <tt>getKey()</tt> instead
+     */
     public String getName() {
-        return name;
+        return key;
+    }
+
+    public String getKey() {
+        return key;
     }
 
     public String getValue() {
@@ -69,7 +63,7 @@ public class PostParameter implements Serializable, Comparable {
 
     @Override
     public int hashCode() {
-        int result = name.hashCode();
+        int result = key.hashCode();
         result = 31 * result + value.hashCode();
         return result;
     }
@@ -84,15 +78,16 @@ public class PostParameter implements Serializable, Comparable {
         }
         if (obj instanceof PostParameter) {
             PostParameter that = (PostParameter) obj;
-            return this.name.equals(that.name) && this.value.equals(that.value);
+            return this.key.equals(that.key) && this.value.equals(that.value);
         }
         return false;
     }
 
+    @Override
     public int compareTo(Object o) {
         int compared;
         PostParameter that = (PostParameter) o;
-        compared = name.compareTo(that.name);
+        compared = key.compareTo(that.key);
         if (0 == compared) {
             compared = value.compareTo(that.value);
         }

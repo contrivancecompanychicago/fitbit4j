@@ -26,14 +26,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package com.fitbit.api;
 
-import com.fitbit.api.client.http.Response;
-
+import com.github.scribejava.core.model.Response;
 import java.util.List;
 
 public class FitbitAPIException extends Exception {
     private int statusCode = -1;
     private static final long serialVersionUID = -2623309261327598087L;
     private List<FitbitApiError> apiErrors;
+    Response res;
 
     public FitbitAPIException(String msg) {
         super(msg);
@@ -60,8 +60,9 @@ public class FitbitAPIException extends Exception {
     }
 
     public FitbitAPIException(String cause, Response res) throws FitbitAPIException {
-        this(cause + '\n' + res.asString(), res.getStatusCode());
-        statusCode = res.getStatusCode();
+        this(cause, res.getCode());
+        this.res = res;
+        statusCode = res.getCode();
         apiErrors = FitbitApiError.constructFitbitApiErrorList(res);
     }
 

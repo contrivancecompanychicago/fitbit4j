@@ -1,7 +1,8 @@
 package com.fitbit.api.common.model.activities;
 
 import com.fitbit.api.FitbitAPIException;
-import com.fitbit.api.client.http.Response;
+import org.nilsding.util.Utils;
+import com.github.scribejava.core.model.Response;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,13 +25,13 @@ public class Activities {
 
     public static Activities constructActivities(Response res) throws FitbitAPIException {
         try {
-            ActivitiesSummary summary = new ActivitiesSummary(res.asJSONObject().getJSONObject("summary"));
-            List<ActivityLog> activities = jsonArrayToActivityList(res.asJSONObject().getJSONArray("activities"));
-            JSONObject goalsJson = res.asJSONObject().optJSONObject("goals");
+            ActivitiesSummary summary = new ActivitiesSummary(Utils.toJsonObject(res).getJSONObject("summary"));
+            List<ActivityLog> activities = jsonArrayToActivityList(Utils.toJsonObject(res).getJSONArray("activities"));
+            JSONObject goalsJson = Utils.toJsonObject(res).optJSONObject("goals");
             ActivityGoals activityGoals = goalsJson != null ? new ActivityGoals(goalsJson) : null;
             return new Activities(summary, activities, activityGoals);
          } catch (JSONException e) {
-            throw new FitbitAPIException(e.getMessage() + ':' + res.asString(), e);
+            throw new FitbitAPIException(e.getMessage() + ':' + res.getMessage(), e);
         }        
     }
 

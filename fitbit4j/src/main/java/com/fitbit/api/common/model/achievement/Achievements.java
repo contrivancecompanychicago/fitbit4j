@@ -1,7 +1,8 @@
 package com.fitbit.api.common.model.achievement;
 
 import com.fitbit.api.FitbitAPIException;
-import com.fitbit.api.client.http.Response;
+import org.nilsding.util.Utils;
+import com.github.scribejava.core.model.Response;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -22,7 +23,7 @@ public class Achievements {
     }
 
     public static Achievements constructAchievements(Response res) throws FitbitAPIException, JSONException {
-        JSONObject jsonObject = res.asJSONObject();
+        JSONObject jsonObject = Utils.toJsonObject(res);
         LifetimeAchievements lifetimeAchievements = new LifetimeAchievements(jsonObject.getJSONObject("lifetime"));
         BestAchievements bestAchievements = null;
         if(jsonObject.has("best")) {

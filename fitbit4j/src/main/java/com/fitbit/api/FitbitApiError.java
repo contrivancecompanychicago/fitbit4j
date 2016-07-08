@@ -1,6 +1,8 @@
 package com.fitbit.api;
 
-import com.fitbit.api.client.http.Response;
+import org.nilsding.util.Utils;
+import com.github.scribejava.core.model.Response;
+import java.io.IOException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -10,6 +12,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class FitbitApiError {
+
     public enum ErrorType {
         Oauth("Oauth"),
         System("system"),
@@ -53,16 +56,16 @@ public class FitbitApiError {
     }
 
     public static List<FitbitApiError> constructFitbitApiErrorList(Response res) throws FitbitAPIException {
-        if (res.isError()) {
+        if (!res.isSuccessful()) {
             try {
                 JSONObject jsonObject;
                 //check if it's not json object but bad request with custom message
                 try {
-                    jsonObject = res.asJSONObject();
+                    jsonObject = Utils.toJsonObject(res);
                 } catch (FitbitAPIException e) {
-                    return Collections.singletonList(new FitbitApiError(FitbitApiError.ErrorType.Request, res.asString()));
+                    return Collections.singletonList(new FitbitApiError(FitbitApiError.ErrorType.Request, res.getMessage()));
                 }
-                if( jsonObject.has("errors") ) {
+                if (jsonObject.has("errors")) {
                     JSONArray errorArray = jsonObject.getJSONArray("errors");
                     List<FitbitApiError> activityList = new ArrayList<FitbitApiError>(errorArray.length());
                     for (int i = 0; i < errorArray.length(); i++) {
@@ -72,7 +75,7 @@ public class FitbitApiError {
                     return activityList;
                 }
             } catch (JSONException e) {
-                throw new FitbitAPIException(e.getMessage() + ':' + res.asString(), e);
+                throw new FitbitAPIException(e.getMessage() + ':' + res.getMessage(), e);
             }
         }
         return new ArrayList<FitbitApiError>(0);

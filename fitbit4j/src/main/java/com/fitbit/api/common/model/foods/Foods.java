@@ -1,7 +1,8 @@
 package com.fitbit.api.common.model.foods;
 
 import com.fitbit.api.FitbitAPIException;
-import com.fitbit.api.client.http.Response;
+import org.nilsding.util.Utils;
+import com.github.scribejava.core.model.Response;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,14 +36,14 @@ public class Foods {
 
     public static Foods constructFoods(Response res) throws FitbitAPIException {
         try {
-            JSONObject json = res.asJSONObject();
+            JSONObject json = Utils.toJsonObject(res);
             FoodsSummary summary = new FoodsSummary(json.getJSONObject("summary"));
             JSONObject goalsJSON = json.optJSONObject("goals");
             FoodsGoals foodsGoals = goalsJSON != null ? new FoodsGoals(goalsJSON) : null;
             List<FoodLog> foods = jsonArrayToFoodLogList(json.getJSONArray("foods"));
             return new Foods(summary, foods, foodsGoals);
          } catch (JSONException e) {
-            throw new FitbitAPIException(e.getMessage() + ':' + res.asString(), e);
+            throw new FitbitAPIException(e.getMessage() + ':' + res.getMessage(), e);
         }
     }
 
@@ -52,10 +53,10 @@ public class Foods {
 
     public static List<FoodLog> constructFoodLogList(Response res, String arrayName) throws FitbitAPIException {
         try {
-            JSONObject json = res.asJSONObject();
+            JSONObject json = Utils.toJsonObject(res);
             return jsonArrayToFoodLogList(json.getJSONArray(arrayName));
          } catch (JSONException e) {
-            throw new FitbitAPIException(e.getMessage() + ':' + res.asString(), e);
+            throw new FitbitAPIException(e.getMessage() + ':' + res.getMessage(), e);
         }
     }
 
