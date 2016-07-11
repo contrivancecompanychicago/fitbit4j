@@ -62,7 +62,6 @@ public class FitbitApiClientAgent /*extends FitbitAPIClientSupport*/ implements 
     }
 
     public FitbitApiClientAgent(FitbitApiCredentialsCache credentialsCache) {
-        oauth = Utils.buildOAuthInstance(null, null);
         if (null == credentialsCache) {
             this.credentialsCache = DEFAULT_CREDENTIALS_CACHE;
         } else {
