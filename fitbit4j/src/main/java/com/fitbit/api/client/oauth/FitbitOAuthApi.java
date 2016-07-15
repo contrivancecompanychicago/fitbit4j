@@ -44,6 +44,11 @@ public class FitbitOAuthApi extends DefaultApi20 {
     }
 
     @Override
+    public String getRefreshTokenEndpoint() {
+        return API_BASE_URL + "/oauth2/token";
+    }
+    
+    @Override
     protected String getAuthorizationBaseUrl() {
         return SITE_BASE_URL + "/oauth2/authorize";
     }
