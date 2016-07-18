@@ -2779,6 +2779,10 @@ public class FitbitApiClientAgent /*extends FitbitAPIClientSupport*/ implements 
     protected void setAccessToken(LocalUserDetail localUser) {
         // Get the access token for the user:
         APIResourceCredentials resourceCredentials = credentialsCache.getResourceCredentials(localUser);
+        setAccessToken(resourceCredentials);
+    }
+    
+    private void setAccessToken(APIResourceCredentials resourceCredentials) {
         // Set the access token in the client:
         accessToken = new OAuth2AccessToken(
                 resourceCredentials.getAccessToken(), 
@@ -2787,6 +2791,7 @@ public class FitbitApiClientAgent /*extends FitbitAPIClientSupport*/ implements 
                 resourceCredentials.getRefreshToken(),
                 resourceCredentials.getScope(), null);
     }
+    
 
     protected void clearAccessToken() {
         // Set the access token in the client to null:
@@ -3288,4 +3293,29 @@ public class FitbitApiClientAgent /*extends FitbitAPIClientSupport*/ implements 
         }*/
     }
     
+    public APIResourceCredentials refreshAccessToken(LocalUserDetail localUser) throws FitbitAPIException {
+        APIResourceCredentials credentials = getCredentialsCache().getResourceCredentials(localUser);
+        OAuth2AccessToken newToken = null;
+        if (credentials == null) {
+            throw new IllegalArgumentException("");
+        }
+        if (credentials.getAccessToken() == null || credentials.getRefreshToken() == null) {
+            throw new IllegalArgumentException("accessToken or refreshToken must not be null");
+        }
+        
+        setAccessToken(credentials);
+        try {
+            newToken = oauth.refreshAccessToken(credentials.getRefreshToken());
+        } catch (java.io.IOException ex) {
+            throw new FitbitAPIException(ex.getMessage());
+        }
+        
+        credentials.setAccessToken(newToken.getAccessToken());
+        credentials.setRefreshToken(newToken.getRefreshToken());
+        credentials.setExpiresIn(newToken.getExpiresIn());
+        credentials.setScope(newToken.getScope());
+        credentials.setTokenType(newToken.getScope());
+        
+        return credentials;
+    }
 }
