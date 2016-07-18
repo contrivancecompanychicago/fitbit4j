@@ -37,10 +37,6 @@ public class FitbitOAuthService extends OAuth20Service {
         }
         final Base64Encoder enc = new DatatypeConverterEncoder();
         final OAuthConfig config = getConfig();
-//        request.addParameter(OAuthConstants.CLIENT_ID, config.getApiKey());
-//        request.addParameter(OAuthConstants.CLIENT_SECRET, config.getApiSecret());
-//        request.addParameter(OAuthConstants.REFRESH_TOKEN, refreshToken);
-//        request.addParameter(OAuthConstants.GRANT_TYPE, OAuthConstants.REFRESH_TOKEN);
         request.addParameter("grant_type", "refresh_token");
         request.addParameter("refresh_token", refreshToken);
         request.addParameter("expires_in", "28800");
