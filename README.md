@@ -1,8 +1,8 @@
 # Fitbit4J (DEPRECATED) #
 
-**This library is not being maintained. Do not use this library in new applications. This library uses OAuth 1.0a, which will be removed from the Fitbit API in 2016. See https://dev.fitbit.com/docs**
+~~**This library is not being maintained. Do not use this library in new applications. This library uses OAuth 1.0a, which will be removed from the Fitbit API in 2016. See https://dev.fitbit.com/docs**~~
 
-This fork is a quick hack to make use of OAuth 2.0.  Obtaining access tokens and so forth will not work.
+This fork is a quick hack to make use of OAuth 2.0.  Obtaining access tokens will not work.  Refreshing tokens works fine though.
 
 This repository hosts the public Fitbit Java Client API and Examples project.
 
