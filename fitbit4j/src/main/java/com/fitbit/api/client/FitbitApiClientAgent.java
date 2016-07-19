@@ -2908,7 +2908,8 @@ public class FitbitApiClientAgent /*extends FitbitAPIClientSupport*/ implements 
     }
 
     public static String getErrorMessage(Response res) throws FitbitAPIException {
-        return res.isSuccessful()? res.getMessage(): "";
+        String msg = !res.isSuccessful()? res.getMessage() : "Success";
+        return msg + " -- Code: " + res.getCode();
     }
 
     /**
@@ -3309,7 +3310,7 @@ public class FitbitApiClientAgent /*extends FitbitAPIClientSupport*/ implements 
         } catch (java.io.IOException ex) {
             throw new FitbitAPIException(ex.getMessage());
         }
-        
+
         credentials.setAccessToken(newToken.getAccessToken());
         credentials.setRefreshToken(newToken.getRefreshToken());
         credentials.setExpiresIn(newToken.getExpiresIn());
