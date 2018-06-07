@@ -7,7 +7,8 @@ public enum APICollectionType {
     sleep("sleep"),
     body("body"),
     user("user"),
-    weight("body/weight");
+    weight("body/weight"),
+    deleteUser("deleteUser");
     
     String urlPath;
     String subscriptionPath;
